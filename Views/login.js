@@ -9,8 +9,11 @@ async function loginPage(event) {
     }
     try {
         let result = await axios.post("http://localhost:3000/login", obj);
-
+        if (result.status === 201) {
+            alert(result.data.message);
+            window.location.href = "../Views/expense.html"
+        }
     } catch (error) {
-        document.body.innerHTML += `${error}`;
+        document.body.innerHTML += `<div style="color:red;">${error.response.data.message}</div>`;
     }
 }
