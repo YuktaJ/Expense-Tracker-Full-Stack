@@ -1,14 +1,15 @@
-const { triggerAsyncId } = require("async_hooks");
+
 const Expense = require("../models/Expenses");
 
 exports.postAddExpenses = async (req, res) => {
     let category = req.body.category;
     let description = req.body.description;
-    let price = req.body.price
+    let price = req.body.price;
+    let userId = req.user.id;
 
     try {
         let result = await Expense.create({
-            category, description, price
+            category, description, price, userId
         })
         res.status(201).json({
             result
@@ -22,7 +23,11 @@ exports.postAddExpenses = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
     try {
-        let expenses = await Expense.findAll();
+        let expenses = await Expense.findAll({
+            where: {
+                userId: req.user.id
+            }
+        });
         res.status(201).json({
             expenses
         })

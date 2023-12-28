@@ -1,6 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
+
+exports.generateAccessToken = (id, name) => {
+    return jwt.sign({ id, name }, "secretKey");
+}
 exports.postSingUp = async (req, res) => {
     try {
 
@@ -57,11 +62,12 @@ exports.postLogin = async (req, res) => {
             })
         } else {
             return res.status(201).json({
+                token: exports.generateAccessToken(user.id, user.username),
                 message: "User logged in successfully.",
                 success: true
+
             })
         }
-
     } catch (error) {
         res.status(500).json({
             message: "Something went wrong."

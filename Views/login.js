@@ -11,6 +11,7 @@ async function loginPage(event) {
         let result = await axios.post("http://localhost:3000/login", obj);
         if (result.status === 201) {
             alert(result.data.message);
+            localStorage.setItem("token",result.data.token);
             window.location.href = "../Views/expense.html"
         }
     } catch (error) {

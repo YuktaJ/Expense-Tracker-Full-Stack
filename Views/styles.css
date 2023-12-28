@@ -1,19 +1,11 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
 .signup-form {
     background-color: #fff;
-    padding: 20px;
+    padding: 50px;
+    align-content: center;
+    margin-top: 100px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 }
 
 h2 {
@@ -23,7 +15,9 @@ h2 {
 
 .input-group {
     margin-bottom: 15px;
+
 }
+
 
 label {
     display: block;
@@ -56,16 +50,6 @@ button:hover {
 
 /* Login CSS */
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
 
 .login-form {
     background-color: #fff;
@@ -129,15 +113,13 @@ button:hover {
 /* add expense page */
 
 /* Basic styling for demo purposes */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-}
+
 
 .expense-form {
     display: flex;
     flex-direction: column;
+    padding: 50px;
+    margin-top: 100px;
     max-width: 500px;
     margin: 0 auto;
 }

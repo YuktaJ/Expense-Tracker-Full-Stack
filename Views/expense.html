@@ -8,8 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
+<nav>
+    <a href="../Views/login.html" type="button" class="btn btn-primary btn-sm float-right">Log Out</a>
+</nav>
 
 <body>
+
     <div class="expense-form">
         <div class="input-group">
             <label for="category">Category:</label>
@@ -31,8 +35,10 @@
             <button onclick="addExpense(event)">Add Expense</button>
         </div>
     </div>
-    <ul id="parent" class="list-group" style="text-align: center;"> List Of Expenses:
-    </ul>
+    <div class="expense-form">
+        <ul id="parent" class="list-group" style="text-align: center;"> List Of Expenses:
+        </ul>
+    </div>
 </body>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
