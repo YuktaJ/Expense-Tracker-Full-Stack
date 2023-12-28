@@ -9,7 +9,8 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <nav>
-    <a href="../Views/login.html" type="button" class="btn btn-primary btn-sm float-right">Log Out</a>
+    <a href="../Views/login.html" type="button" class="btn btn-primary btn-sm float-right" onclick="Logout(event)">Log
+        Out</a>
 </nav>
 
 <body>
@@ -33,6 +34,9 @@
         </div>
         <div class="input-group">
             <button onclick="addExpense(event)">Add Expense</button>
+        </div>
+        <div class="input-group">
+            <button onclick="premiumUser(event)">Become a Premium User</button>
         </div>
     </div>
     <div class="expense-form">

@@ -43,7 +43,8 @@ exports.deleteExpense = async (req, res) => {
         let id = req.params.id;
         Expense.destroy({
             where: {
-                id: id
+                id: id,
+                userId: req.user.id
             }
         })
 
@@ -53,3 +54,4 @@ exports.deleteExpense = async (req, res) => {
         })
     }
 }
+

@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
-exports.generateAccessToken = (id, name) => {
-    return jwt.sign({ id, name }, "secretKey");
+exports.generateAccessToken = (id, name, isPremium) => {
+    return jwt.sign({ id, name, isPremium }, "secretKey");
 }
 exports.postSingUp = async (req, res) => {
     try {
@@ -62,10 +62,9 @@ exports.postLogin = async (req, res) => {
             })
         } else {
             return res.status(201).json({
-                token: exports.generateAccessToken(user.id, user.username),
+                token: exports.generateAccessToken(user.id, user.username, user.isPremium),
                 message: "User logged in successfully.",
                 success: true
-
             })
         }
     } catch (error) {
