@@ -1,22 +1,29 @@
 const User = require("../models/User");
-const { use } = require("../routes/User");
+const bcrypt = require("bcrypt");
 
 exports.postSingUp = async (req, res) => {
     try {
+
         const username = req.body.username;
         const password = req.body.password;
         const email = req.body.email;
 
-        let user = await User.create({
-            username,
-            email,
-            password
+        const saltrounds = 10;
+        bcrypt.hash(password, saltrounds, async (err, hash) => {
+            if (err) {
+                return res.status(404).json({
+                    message: "Incorrect password syntax."
+                })
+            }
+            await User.create({
+                username,
+                email,
+                password: hash
+            });
         })
-        if (user) {
-            res.status(201).json({
-                message: "User created successfully."
-            })
-        }
+        res.status(201).json({
+            message: "User created successfully."
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -40,24 +47,21 @@ exports.postLogin = async (req, res) => {
                 message: "User doesn't exists.",
                 success: false
             })
-        } else {
-            let result = await User.findOne({
-                where: {
-                    password: password,
-                    email: email
-                }
-            })
-            if (result) {
-                res.status(201).json({
-                    message: "User logged in successfully.",
-                    success: true
-                })
-            } else {
-                res.status(401).json({
-                    message: "Incorrect Password."
-                })
-            }
         }
+        console.log(user.password, password)
+        let result = await bcrypt.compare(password, user.password)
+
+        if (result === false) {
+            return res.status(401).json({
+                message: "Incorrect Password"
+            })
+        } else {
+            return res.status(201).json({
+                message: "User logged in successfully.",
+                success: true
+            })
+        }
+
     } catch (error) {
         res.status(500).json({
             message: "Something went wrong."
