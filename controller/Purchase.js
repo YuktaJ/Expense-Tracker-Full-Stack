@@ -5,12 +5,12 @@ const Order = require('../models/Order')
 
 exports.purchasePremium = async (req, res, next) => {
     try {
-        console.log("Yukta working.")
+
         let rzp = new Razorpay({
-            key_id: 'rzp_test_0jPnIKBd5S1mUz',
-            key_secret: 'FWxmWa0lTu5mAgsLuKt7Srjz'
+            key_id: 'rzp_test_47f2CGXiHPEtCB',
+            key_secret: 'zzdXe1jH5VHEs5gekzmTLYah'
         })
-        const amount = 9999;
+        const amount = 2500;
         rzp.orders.create({ amount, currency: "INR" }, (err, order) => {
             if (err) {
                 throw new Error("Something went wrong.");
@@ -25,6 +25,7 @@ exports.purchasePremium = async (req, res, next) => {
 }
 
 exports.updateTransaction = async (req, res) => {
+    
     try {
         let userId = req.user.id;
         const username = req.user.username;
