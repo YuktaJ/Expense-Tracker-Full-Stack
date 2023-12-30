@@ -1,14 +1,14 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const sequelize = require("../connections/database");
 
 exports.generateAccessToken = (id, name, isPremium) => {
     return jwt.sign({ id, name, isPremium }, "secretKey");
 }
 exports.postSingUp = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
-
         const username = req.body.username;
         const password = req.body.password;
         const email = req.body.email;
@@ -24,13 +24,14 @@ exports.postSingUp = async (req, res) => {
                 username,
                 email,
                 password: hash
-            });
+            }, { transaction: t });
         })
+        await t.commit()
         res.status(201).json({
             message: "User created successfully."
         })
     } catch (error) {
-        console.log(error);
+        await t.rollback();
         res.status(500).json({
             message: "User already exists."
         })
@@ -38,6 +39,7 @@ exports.postSingUp = async (req, res) => {
 }
 
 exports.postLogin = async (req, res) => {
+    const t = await sequelize.transaction()
     try {
         let email = req.body.email;
         let password = req.body.password;
@@ -45,7 +47,7 @@ exports.postLogin = async (req, res) => {
         let user = await User.findOne({
             where: {
                 email: email
-            }
+            },transaction:t
         })
         if (!user) {
             res.status(404).json({
@@ -53,6 +55,7 @@ exports.postLogin = async (req, res) => {
                 success: false
             })
         }
+    
         console.log(user.password, password)
         let result = await bcrypt.compare(password, user.password)
 
@@ -61,6 +64,7 @@ exports.postLogin = async (req, res) => {
                 message: "Incorrect Password"
             })
         } else {
+            await t.commit();
             return res.status(201).json({
                 token: exports.generateAccessToken(user.id, user.username, user.isPremium),
                 message: "User logged in successfully.",
@@ -68,6 +72,7 @@ exports.postLogin = async (req, res) => {
             })
         }
     } catch (error) {
+        await t.rollback();
         res.status(500).json({
             message: "Something went wrong."
         })

@@ -1,7 +1,8 @@
 let Expense = require("../models/Expenses");
 let userController = require("../controller/User");
 const Razorpay = require("razorpay");
-const Order = require('../models/Order')
+const Order = require('../models/Order');
+const sequelize = require("../connections/database");
 
 exports.purchasePremium = async (req, res, next) => {
     try {
@@ -25,7 +26,7 @@ exports.purchasePremium = async (req, res, next) => {
 }
 
 exports.updateTransaction = async (req, res) => {
-    
+    const t = await sequelize.transaction()
     try {
         let userId = req.user.id;
         const username = req.user.username;
@@ -36,17 +37,19 @@ exports.updateTransaction = async (req, res) => {
         const order = await Order.findOne({
             where: {
                 orderId
-            }
+            }, transaction: t
         })
         const promise1 = await order.update({ paymentId, status: "Successful" });
         const promise2 = await req.user.update({ isPremium: true });
         Promise.all([promise1, promise2])
+        await t.commit(); //save transaction changes
         res.status(200).json({
             message: "Transaction Successful.",
             token: userController.generateAccessToken(userId, username, true)
         })
 
     } catch (error) {
+        await t.rollback();
         res.status(403).json({ message: 'Something went wrong' })
     }
 }

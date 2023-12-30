@@ -1,7 +1,10 @@
-
+const sequelize = require("../connections/database");
 const Expense = require("../models/Expenses");
 const User = require("../models/User");
+
 exports.postAddExpenses = async (req, res) => {
+    const t = await sequelize.transaction()
+
     let category = req.body.category;
     let description = req.body.description;
     let price = req.body.price;
@@ -19,19 +22,23 @@ exports.postAddExpenses = async (req, res) => {
 
         let result = await Expense.create({
             category, description, price, userId
-        })
+        }, { transaction: t })
         await User.update({
             totalExpenses
         }, {
             where: {
                 id: req.user.id
-            }
+
+            }, transaction: t
         })
+        await t.commit();
+
         res.status(201).json({
             result
         })
 
     } catch (error) {
+        await t.rollback();
         res.status(500).json({
             err: "Something went wrong."
         })
@@ -58,7 +65,7 @@ exports.getExpenses = async (req, res) => {
 
 exports.deleteExpense = async (req, res) => {
     let totalExpenses = req.user.totalExpenses;
-
+    const t = await sequelize.transaction();
     try {
         if (totalExpenses === null) {
             totalExpenses = 0;
@@ -67,13 +74,13 @@ exports.deleteExpense = async (req, res) => {
         let id = req.params.id;
         let price = await Expense.findByPk(id);
         price = Number.parseInt(price.price);
-        console.log(price);
+       
         totalExpenses = totalExpenses - price
         await Expense.destroy({
             where: {
                 id: id,
                 userId: req.user.id
-            }
+            },transaction:t
         })
 
         await User.update({
@@ -81,10 +88,12 @@ exports.deleteExpense = async (req, res) => {
         }, {
             where: {
                 id: req.user.id
-            }
+            },transaction:t
         })
+        await t.commit();
 
     } catch (error) {
+        await t.rollback();
         res.status(500).json({
             err: "Something went wrong."
         })
