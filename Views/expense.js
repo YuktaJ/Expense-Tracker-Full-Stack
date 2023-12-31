@@ -32,7 +32,7 @@ async function refresh() {
         document.body.appendChild(leaderBoardBtn);
     }
     try {
-        let result = await axios.get("http://localhost:3000/expenses", { headers: { "Authorization": token } });
+        let result = await axios.get("http://localhost:3000/expenses", {headers: { "Authorization": token }});
         for (let i = 0; i < result.data.expenses.length; i++) {
             showExpenseOnScreen(result.data.expenses[i]);
         }
@@ -42,7 +42,6 @@ async function refresh() {
     }
 }
 refresh()
-
 
 function addExpense(event) {
     event.preventDefault();
@@ -54,7 +53,6 @@ function addExpense(event) {
     let obj = {
         category, description, price
     }
-
     storeExpenses(obj);
 }
 

@@ -11,7 +11,7 @@ function signUpPage(event) {
 
     storeInStorage(obj);
 }
-
+// Storing the user data 
 async function storeInStorage(obj) {
     try {
         let result = await axios.post("http://localhost:3000/signup", obj);

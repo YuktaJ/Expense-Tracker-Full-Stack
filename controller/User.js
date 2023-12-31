@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt"); // encrypting the password 
 const jwt = require("jsonwebtoken");
 const sequelize = require("../connections/database");
 
@@ -57,7 +57,7 @@ exports.postLogin = async (req, res) => {
         }
     
         console.log(user.password, password)
-        let result = await bcrypt.compare(password, user.password)
+        let result = await bcrypt.compare(password, user.password) //encrypted password is compared
 
         if (result === false) {
             return res.status(401).json({
