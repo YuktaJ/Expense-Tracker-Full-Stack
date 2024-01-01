@@ -9,6 +9,7 @@ const Order = require("./models/Order");
 const purchaseRoutes = require("./routes/Purchase");
 const premiumRoutes = require("./routes/Premium");
 const resetPasswordRoutes = require("./routes/ResetPassword");
+const ResetPassword = require("./models/ResetPassword");
 
 const app = express();
 
@@ -25,6 +26,8 @@ User.hasMany(Expense);
 Expense.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
+User.hasMany(ResetPassword);
+ResetPassword.belongsTo(User);
 
 async function main() {
     try {
