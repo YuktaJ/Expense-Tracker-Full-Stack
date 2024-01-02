@@ -2,6 +2,11 @@ let leaderBoardBtn = document.createElement("button");
 leaderBoardBtn.appendChild(document.createTextNode("Leader Board"));
 leaderBoardBtn.className = "btn btn-warning";
 
+
+let downloadBtn = document.createElement("button");
+downloadBtn.appendChild(document.createTextNode("Download Expenses"));
+downloadBtn.className = "btn btn-success";
+
 function parseJwt(token) {
     var base64Url = token.split(".")[1];
     var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -30,9 +35,10 @@ async function refresh() {
         li.className = "list-group-item"
         document.getElementById("premiumBtn").replaceWith(li);
         document.body.appendChild(leaderBoardBtn);
+        document.body.appendChild(downloadBtn);
     }
     try {
-        let result = await axios.get("http://localhost:3000/expenses", {headers: { "Authorization": token }});
+        let result = await axios.get("http://localhost:3000/expenses", { headers: { "Authorization": token } });
         for (let i = 0; i < result.data.expenses.length; i++) {
             showExpenseOnScreen(result.data.expenses[i]);
         }
@@ -148,3 +154,18 @@ leaderBoardBtn.addEventListener("click", async () => {
     }
 
 });
+
+downloadBtn.onclick = async () => {
+    try {
+        let token = localStorage.getItem("token");
+        let result = await axios.get("http://localhost:3000/downloadedExp");
+        if (result.status === 200) {
+            var a = document.createElement("a");
+            a.href = result.data.fileUrl;
+            a.download = "myexpense.csv";
+            a.click();
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}

@@ -14,6 +14,8 @@ exports.postSingUp = async (req, res) => {
         const password = req.body.password;
         const email = req.body.email;
 
+        
+
         const saltrounds = 10;
         const hash = await bcrypt.hash(password, saltrounds); // Hash the password synchronously
 
