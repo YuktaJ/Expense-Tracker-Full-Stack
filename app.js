@@ -10,9 +10,11 @@ const purchaseRoutes = require("./routes/Purchase");
 const premiumRoutes = require("./routes/Premium");
 const resetPasswordRoutes = require("./routes/ResetPassword");
 const ResetPassword = require("./models/ResetPassword");
+const env = require("dotenv");
 
 const app = express();
 
+env.config();
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -21,6 +23,7 @@ app.use(expenseRoutes);
 app.use(purchaseRoutes);
 app.use(premiumRoutes);
 app.use(resetPasswordRoutes);
+
 
 User.hasMany(Expense);
 Expense.belongsTo(User);

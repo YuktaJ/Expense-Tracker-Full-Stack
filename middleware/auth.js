@@ -1,11 +1,11 @@
 const User = require('../models/User');
 
-const jwt = require("jsonwebtoken"); 
+const jwt = require("jsonwebtoken");
 
 exports.authenticate = async (req, res, next) => {
     try {
         const token = req.header("Authorization");
-        console.log(token);
+        console.log(token, "This is token");
         const user = jwt.verify(token, "secretKey");
         console.log(user);
         if (!user) {

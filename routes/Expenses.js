@@ -7,5 +7,5 @@ const expenseController = require("../controller/Expenses")
 router.post("/expenses", userAuthentication.authenticate, expenseController.postAddExpenses);
 router.get("/expenses", userAuthentication.authenticate, expenseController.getExpenses);
 router.delete("/deleteExpense/:id", userAuthentication.authenticate, expenseController.deleteExpense);
-
+router.get("/downloadedExp", userAuthentication.authenticate, expenseController.downloadExp);
 module.exports = router;

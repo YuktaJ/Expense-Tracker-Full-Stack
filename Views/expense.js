@@ -35,7 +35,7 @@ async function refresh() {
         li.className = "list-group-item"
         document.getElementById("premiumBtn").replaceWith(li);
         document.body.appendChild(leaderBoardBtn);
-        document.body.appendChild(downloadBtn);
+        document.getElementById("addexp").after(downloadBtn);
     }
     try {
         let result = await axios.get("http://localhost:3000/expenses", { headers: { "Authorization": token } });
@@ -158,7 +158,7 @@ leaderBoardBtn.addEventListener("click", async () => {
 downloadBtn.onclick = async () => {
     try {
         let token = localStorage.getItem("token");
-        let result = await axios.get("http://localhost:3000/downloadedExp");
+        let result = await axios.get("http://localhost:3000/downloadedExp", { headers: { "Authorization": token } });
         if (result.status === 200) {
             var a = document.createElement("a");
             a.href = result.data.fileUrl;

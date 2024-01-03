@@ -162,3 +162,10 @@ button:hover {
 .expense-form .input-group button:hover {
     background-color: #0056b3;
 }
+
+.expense-form .input-group button {
+    background-color: #97a5b5;
+    color: #fff;
+    border: black 5px;
+    cursor: pointer;
+}
