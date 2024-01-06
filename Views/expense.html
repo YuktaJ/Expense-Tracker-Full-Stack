@@ -9,7 +9,8 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <nav>
-    <a href="../Views/login.html" type="button" class="btn btn-primary btn-sm float-right" onclick="Logout(event)">Log
+    <a href="../Views/login.html" type="button" class="btn btn-outline-secondary btn-sm float-right"
+        onclick="Logout(event)">Log
         Out</a>
 </nav>
 
@@ -33,20 +34,25 @@
             <input type="number" id="price" name="price" placeholder="Enter price" step="0.01">
         </div>
         <div class="input-group">
-            <button onclick="addExpense(event)" id="addexp" >Add Expense</button>
+            <button onclick="addExpense(event)" id="addexp">Add Expense</button>
         </div>
         <div class="input-group">
-            <button onclick="premiumUser(event)" id="premiumBtn">Become a Premium User</button>
+            <button id="premiumBtn">Become a Premium User</button>
         </div>
     </div>
-    <div class="expense-form">
-        <ul id="parent" class="list-group" style="text-align: center;"> List Of Expenses:
+
+    <div class="expense-form" id="dadaji">
+        <h3 style="text-align: center;"> List Of Expenses:</h3>
+        <ul id="parent" class="list-group" style="text-align: center;">
         </ul>
     </div>
     <div class="expense-form">
-        <ul id="parent1" class="list-group" style="text-align: center;"> Downloaded Expenses:
+        <ul id="parent1" class="list-group" style="text-align: center;">
         </ul>
     </div>
+    <div id="pagination">
+    </div>
+
 </body>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

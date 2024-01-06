@@ -10,6 +10,7 @@ const purchaseRoutes = require("./routes/Purchase");
 const premiumRoutes = require("./routes/Premium");
 const resetPasswordRoutes = require("./routes/ResetPassword");
 const ResetPassword = require("./models/ResetPassword");
+const Download = require("./models/Downloadfiles")
 const env = require("dotenv");
 
 const app = express();
@@ -27,10 +28,15 @@ app.use(resetPasswordRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
 User.hasMany(Order);
 Order.belongsTo(User);
+
 User.hasMany(ResetPassword);
 ResetPassword.belongsTo(User);
+
+User.hasMany(Download);
+Download.hasOne(User);
 
 async function main() {
     try {

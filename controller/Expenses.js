@@ -1,6 +1,8 @@
 const sequelize = require("../connections/database");
 const AWS = require("aws-sdk");
+const S3Services = require("../services/S3services");
 const Expense = require("../models/Expenses");
+const Download = require("../models/Downloadfiles");
 const User = require("../models/User");
 
 
@@ -12,6 +14,7 @@ exports.postAddExpenses = async (req, res) => {
     let description = req.body.description;
     let price = req.body.price;
     let userId = req.user.id;
+
     let totalExpenses = req.user.totalExpenses;
 
     try {
@@ -35,11 +38,9 @@ exports.postAddExpenses = async (req, res) => {
             }, transaction: t
         })
         await t.commit();
-
         res.status(201).json({
             result
         })
-
     } catch (error) {
         await t.rollback();
         res.status(500).json({
@@ -50,14 +51,28 @@ exports.postAddExpenses = async (req, res) => {
 
 
 exports.getExpenses = async (req, res) => {
+    let itemPerPage = 4;
     try {
+        let page = Number.parseInt(req.query.page) || 1;
+        itemPerPage = Number.parseInt(req.query.item) || 5;
+        let totalExpenses = await Expense.count({ where: { userid: req.user.id } })
         let expenses = await Expense.findAll({
             where: {
-                userId: req.user.id
-            }
+                userId: req.user.id,
+
+            },
+            offset: (page - 1) * itemPerPage,
+            limit: itemPerPage
+
         });
         res.status(201).json({
-            expenses
+            expenses,
+            currentPage: page,
+            hasPreviousPage: page > 1,
+            hasNextPage: (page * itemPerPage) < totalExpenses,
+            nextPage: page + 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalExpenses / itemPerPage)
         })
     } catch (error) {
         res.status(500).json({
@@ -94,7 +109,6 @@ exports.deleteExpense = async (req, res) => {
             }, transaction: t
         })
         await t.commit();
-
     } catch (error) {
         await t.rollback();
         res.status(500).json({
@@ -102,42 +116,49 @@ exports.deleteExpense = async (req, res) => {
         })
     }
 }
-function uploadToS3(data, file) {
-    const BUCKET_NAME = "expensetracker1820";
-    const IAM_USER_KEY = process.env.IAM_KEY;
-    const IAM_USER_SECRET = process.env.IAM_SECRETKEY;
 
-    let s3bucket = new AWS.S3({
-        accessKeyId: IAM_USER_KEY,
-        secretAccessKey: IAM_USER_SECRET,
-        Bucket: BUCKET_NAME
-    })
-    let params = {
-        Bucket: BUCKET_NAME,
-        Key: file,
-        Body: data,
-        ACL: "public-read"
-    }
-    return new Promise((resolve, reject) => {
-        s3bucket.upload(params, (error, result) => {
-            if (error) {
-                reject("Error in uploading file");
-            } else {
-                resolve(result.Location);
-            }
-        })
-    })
-}
 exports.downloadExp = async (req, res) => {
+
     try {
+        const userId = req.user.id;
+        let currDate = new Date();
+        currDate = currDate.toISOString().split('T')[0];
         const expenses = await req.user.getExpenses();
         const stringyfyExp = JSON.stringify(expenses);
-        const fileName = "Expense.txt";
-        const fileUrl = await uploadToS3(stringyfyExp, fileName)
+        const fileName = `expense${userId}/${currDate}_${req.user.username}.txt`;
+        console.log("Filename:", fileName)
+        const fileUrl = await S3Services.uploadToS3(stringyfyExp, fileName)
+        await Download.create({
+            userId,
+            url: fileUrl,
+            date: currDate
+        })
+        console.log(fileUrl)
         res.status(200).json({
-            fileUrl
+            fileUrl, fileName
         })
     } catch (error) {
         console.log(error)
+    }
+}
+
+exports.dowloadhistory = async (req, res) => {
+    console.log("Happy working")
+    try {
+        let userId = req.user.id;
+        let files = await Download.findAll(
+            {
+                where: {
+                    userId
+                }
+            }
+        )
+        res.status(201).json({
+            files
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: "Something went wrong"
+        })
     }
 }

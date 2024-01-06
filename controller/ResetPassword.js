@@ -22,7 +22,7 @@ exports.resetPassword = async (req, res) => {
             })
         if (user) {
             const id = uuid.v4();
-            user.createForgotpassword({ id, active: true });
+            await user.createForgotpassword({ id, active: true });
             const apiInstance = new Sib.TransactionalEmailsApi();
             console.log("working")
             const sendEmail = await apiInstance.sendTransacEmail({

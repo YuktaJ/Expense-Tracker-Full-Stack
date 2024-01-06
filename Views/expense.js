@@ -1,3 +1,8 @@
+
+
+document.getElementById("premiumBtn").addEventListener("click", (event) => {
+    premiumUser(event);
+});
 let leaderBoardBtn = document.createElement("button");
 leaderBoardBtn.appendChild(document.createTextNode("Leader Board"));
 leaderBoardBtn.className = "btn btn-warning";
@@ -25,6 +30,8 @@ function parseJwt(token) {
 
 
 async function refresh() {
+    let page = 1;
+
     let token = localStorage.getItem('token');
     var parsedToken = parseJwt(token);
     var isPremium = parsedToken.isPremium;
@@ -34,21 +41,110 @@ async function refresh() {
         li.textContent = "You are a premium user"
         li.className = "list-group-item"
         document.getElementById("premiumBtn").replaceWith(li);
+
         document.body.appendChild(leaderBoardBtn);
+        DownloadedFiles();
         document.getElementById("addexp").after(downloadBtn);
     }
     try {
-        let result = await axios.get("http://localhost:3000/expenses", { headers: { "Authorization": token } });
+        let result = await axios.get(`http://localhost:3000/expenses?page=${page}&item=${localStorage.getItem("item_perPage")}`, { headers: { "Authorization": token } });
         for (let i = 0; i < result.data.expenses.length; i++) {
             showExpenseOnScreen(result.data.expenses[i]);
         }
-
+        StartPagination(result.data);
     } catch (error) {
         console.log(error);
     }
 }
 refresh()
 
+function StartPagination({
+    currentPage, previousPage, nextPage, lastPage, hasNextPage, hasPreviousPage
+}) {
+
+    console.log(currentPage, previousPage, nextPage, lastPage, hasNextPage, hasPreviousPage)
+    let pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+    document.getElementById("parent").after(pagination);
+    let select = document.createElement("select");
+    select.id = "sher"
+    let option0 = document.createElement("option");
+    option0.textContent = "Select"
+
+    let option1 = document.createElement("option");
+
+    option1.value = "5";
+    option1.textContent = "5"
+    let option2 = document.createElement("option")
+    option2.value = "10"
+    option2.textContent = "10"
+    let option3 = document.createElement("option")
+    option3.value = "25";
+    option3.textContent = "25"
+    let option4 = document.createElement("option")
+    option4.value = "50";
+    option4.textContent = "50";
+    select.appendChild(option0)
+    select.appendChild(option1)
+    select.appendChild(option2)
+    select.appendChild(option3)
+    select.appendChild(option4)
+    pagination.appendChild(select);
+    document.getElementById("sher").addEventListener("click", (event) => {
+        event.preventDefault();
+
+        console.log(document.getElementById("sher").value)
+        localStorage.setItem("item_perPage", document.getElementById("sher").value);
+
+    })
+    if (hasPreviousPage) {
+        let PrevBtn = document.createElement("button");
+        PrevBtn.innerHTML = previousPage;
+        PrevBtn.addEventListener("click", () => {
+            getExpenses(previousPage);
+        })
+        pagination.appendChild(PrevBtn);
+    }
+
+    let currBtn = document.createElement("button");
+    currBtn.innerHTML = currentPage;
+    currBtn.onclick = () => {
+        getExpenses(currentPage);
+    }
+    pagination.appendChild(currBtn);
+
+    if (hasNextPage) {
+        let nextBtn = document.createElement("button");
+        nextBtn.innerHTML = nextPage;
+        nextBtn.onclick = () => {
+            getExpenses(nextPage);
+        }
+        pagination.appendChild(nextBtn)
+    }
+}
+
+async function getExpenses(page) {
+    try {
+        console.log(page)
+        let token = localStorage.getItem("token");
+        let expenses = await axios.get(`http://localhost:3000/expenses?page=${page}&item=${localStorage.getItem("item_perPage")}`, { headers: { "Authorization": token } });
+        console.log(expenses.data.expenses)
+        clearData();
+        for (let i = 0; i < expenses.data.expenses.length; i++) {
+            showExpenseOnScreen(expenses.data.expenses[i]);
+
+        }
+        StartPagination(expenses.data)
+    } catch (error) {
+        alert("Something went wrong!");
+
+    }
+}
+
+function clearData() {
+    let parent = document.getElementById("parent");
+    parent.innerHTML = "";
+}
 function addExpense(event) {
     event.preventDefault();
     // Retrieve values from the form fields
@@ -75,7 +171,9 @@ async function storeExpenses(obj) {
 
 function showExpenseOnScreen(obj) {
     let parentEle = document.getElementById("parent");
+
     let childEle = document.createElement("li");
+
     childEle.textContent = `${obj.category}:  ${obj.description} ${obj.price}/-`;
     childEle.className = "list-group-item";
     childEle.style.backgroundColor = "black";
@@ -96,8 +194,8 @@ function showExpenseOnScreen(obj) {
             console.log("Error")
         }
     }
-
 }
+
 async function premiumUser(event) {
     try {
         let token = localStorage.getItem("token");
@@ -162,10 +260,31 @@ downloadBtn.onclick = async () => {
         if (result.status === 200) {
             var a = document.createElement("a");
             a.href = result.data.fileUrl;
-            a.download = "myexpense.csv";
+            a.download = result.data.filename;
             a.click();
         }
     } catch (error) {
         console.log(error)
     }
+}
+async function DownloadedFiles() {
+    let ul = document.createElement("ul");
+    ul.textContent = "List of Downloaded Files"
+    ul.className = "list-group"
+    document.getElementById("parent1").appendChild(ul);
+
+    try {
+        let token = localStorage.getItem("token");
+        let res = await axios.get("http://localhost:3000/downloadhistory", { headers: { "Authorization": token } });
+        for (let i = 0; i < res.data.files.length; i++) {
+            let li = document.createElement("li");
+            li.textContent = `${res.data.files[i].date} : ${res.data.files[i].url}`;
+            li.className = "list-group";
+            ul.appendChild(li);
+        }
+    } catch (error) {
+        console.log(error.response.data);
+        alert("Error in fetching data")
+    }
+
 }

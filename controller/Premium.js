@@ -7,7 +7,7 @@ exports.getLeaderBoard = async (req, res) => {
             group: ["id"],
             order: [["totalExpenses", "DESC"]]
         });
-        res.status("200").json({
+        res.status(200).json({
             user
         })
     } catch (error) {
