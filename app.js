@@ -1,3 +1,5 @@
+const env = require("dotenv");
+env.config();
 const express = require("express");
 const sequelize = require("./connections/database");
 const cors = require("cors");
@@ -11,11 +13,11 @@ const premiumRoutes = require("./routes/Premium");
 const resetPasswordRoutes = require("./routes/ResetPassword");
 const ResetPassword = require("./models/ResetPassword");
 const Download = require("./models/Downloadfiles")
-const env = require("dotenv");
+
 
 const app = express();
 
-env.config();
+
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -41,7 +43,7 @@ Download.hasOne(User);
 async function main() {
     try {
         await sequelize.sync();
-        app.listen(3000);
+        app.listen(process.env.PORT || 3000);
         console.log("Connection done!");
     } catch (error) {
         console.log(error)

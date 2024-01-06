@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const sequelize = require("../connections/database");
 
 exports.generateAccessToken = (id, name, isPremium) => {
-    return jwt.sign({ id, name, isPremium }, "secretKey");
+    return jwt.sign({ id, name, isPremium }, process.env.SECRETKEY);
 };
 
 exports.postSingUp = async (req, res) => {

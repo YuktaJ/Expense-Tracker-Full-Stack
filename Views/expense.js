@@ -68,6 +68,8 @@ function StartPagination({
     document.getElementById("parent").after(pagination);
     let select = document.createElement("select");
     select.id = "sher"
+    select.className = "form-select";
+    select.multiple = "Multiple select example";
     let option0 = document.createElement("option");
     option0.textContent = "Select"
 

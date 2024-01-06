@@ -6,8 +6,7 @@ const uuid = require("uuid");
 const bcrypt = require("bcrypt");
 const client = Sib.ApiClient.instance;
 const apiKey = client.authentications["api-key"];
-apiKey.apiKey = "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";
-
+apiKey.apiKey = process.env.SIB_KEY;
 
 exports.resetPassword = async (req, res) => {
     const t = sequelize.transaction();
