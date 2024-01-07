@@ -3,6 +3,7 @@
 document.getElementById("premiumBtn").addEventListener("click", (event) => {
     premiumUser(event);
 });
+
 let leaderBoardBtn = document.createElement("button");
 leaderBoardBtn.appendChild(document.createTextNode("Leader Board"));
 leaderBoardBtn.className = "btn btn-warning";
@@ -202,9 +203,6 @@ function showExpenseOnScreen(obj) {
     }
 }
 
-document.getElementById("premiumBtn").addEventListener("click", (event) => {
-    premiumUser(event);
-})
 
 async function premiumUser(event) {
     try {
@@ -247,7 +245,12 @@ function Logout(event) {
     localStorage.removeItem("token");
 }
 
-leaderBoardBtn.addEventListener("click", async () => {
+leaderBoardBtn.addEventListener("click", (event) => {
+    leaderBoard(event)
+})
+
+async function leaderBoard(event) {
+    event.preventDefault()
     try {
         localStorage.getItem("token");
         let res = await axios.get("http://52.53.221.53:3000/showLeaderBoard");
@@ -265,7 +268,9 @@ leaderBoardBtn.addEventListener("click", async () => {
     } catch (error) {
         console.log("error");
     }
-});
+}
+
+
 
 downloadBtn.onclick = async () => {
     try {
