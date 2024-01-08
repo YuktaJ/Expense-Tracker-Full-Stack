@@ -17,7 +17,7 @@ function signUpPage(event) {
 // Storing the user data 
 async function storeInStorage(obj) {
     try {
-        let result = await axios.post("http://52.52.126.146:3000/signup", obj);
+        let result = await axios.post("http://52.53.205.42:3000/signup", obj);
         if (result.status === 201) {
             alert(`${result.data.message}`);
             window.location.href = './login.html';
