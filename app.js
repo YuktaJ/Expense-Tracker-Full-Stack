@@ -21,7 +21,6 @@ const Download = require("./models/Downloadfiles")
 const app = express();
 const accesslogstream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" });
 
-
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -32,10 +31,9 @@ app.use(expenseRoutes);
 app.use(purchaseRoutes);
 app.use(premiumRoutes);
 app.use(resetPasswordRoutes);
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, `${req.url}`));
+app.use("/", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', `signup.html`));
 })
-
 
 User.hasMany(Expense);
 Expense.belongsTo(User);

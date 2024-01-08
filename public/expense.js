@@ -48,7 +48,7 @@ async function refresh() {
         document.getElementById("addexp").after(downloadBtn);
     }
     try {
-        let result = await axios.get(`http://52.53.221.53:3000/expenses?page=${page}&item=${localStorage.getItem("item_perPage")}`, { headers: { "Authorization": token } });
+        let result = await axios.get(`http://52.52.126.146:3000/expenses?page=${page}&item=${localStorage.getItem("item_perPage")}`, { headers: { "Authorization": token } });
         for (let i = 0; i < result.data.expenses.length; i++) {
             showExpenseOnScreen(result.data.expenses[i]);
         }
@@ -130,7 +130,7 @@ async function getExpenses(page) {
     try {
         console.log(page)
         let token = localStorage.getItem("token");
-        let expenses = await axios.get(`http://52.53.221.53:3000/expenses?page=${page}&item=${localStorage.getItem("item_perPage")}`, { headers: { "Authorization": token } });
+        let expenses = await axios.get(`http://52.52.126.146:3000/expenses?page=${page}&item=${localStorage.getItem("item_perPage")}`, { headers: { "Authorization": token } });
         console.log(expenses.data.expenses)
         clearData();
         for (let i = 0; i < expenses.data.expenses.length; i++) {
@@ -168,7 +168,7 @@ function addExpense(event) {
 async function storeExpenses(obj) {
     try {
         let token = localStorage.getItem("token")
-        let expense = await axios.post("http://52.53.221.53:3000/expenses", obj, { headers: { "Authorization": token } })
+        let expense = await axios.post("http://52.52.126.146:3000/expenses", obj, { headers: { "Authorization": token } })
         showExpenseOnScreen(expense.data.result);
     } catch (error) {
         document.body.innerHTML += `<div style="color:red;">${error.response.data.err}</div>`;
@@ -196,7 +196,7 @@ function showExpenseOnScreen(obj) {
         parentEle.removeChild(childEle);
         try {
             let token = localStorage.getItem('token');
-            await axios.delete("http://52.53.221.53:3000/deleteExpense/" + obj.id, { headers: { "Authorization": token } });
+            await axios.delete("http://52.52.126.146:3000/deleteExpense/" + obj.id, { headers: { "Authorization": token } });
         } catch (error) {
             console.log("Error")
         }
@@ -207,14 +207,14 @@ function showExpenseOnScreen(obj) {
 async function premiumUser(event) {
     try {
         let token = localStorage.getItem("token");
-        let res = await axios.get("http://52.53.221.53:3000/premiumMembership",
+        let res = await axios.get("http://52.52.126.146:3000/premiumMembership",
             { headers: { "Authorization": token } });
         console.log(res.data);
         var options = {
             key: res.data.key_id,
             orderid: res.data.order.id,
             handler: async function (res) {
-                const response = await axios.post("http://52.53.221.53:3000/updateTransaction",
+                const response = await axios.post("http://52.52.126.146:3000/updateTransaction",
                     {
                         orderId: options.orderid,
                         payment_id: res.razorpay_payment_id
@@ -253,7 +253,7 @@ async function leaderBoard(event) {
     event.preventDefault()
     try {
         localStorage.getItem("token");
-        let res = await axios.get("http://52.53.221.53:3000/showLeaderBoard");
+        let res = await axios.get("http://52.52.126.146:3000/showLeaderBoard");
         let ul = document.createElement("ul");
         ul.textContent = "Leader Board";
         ul.className = "list-group";
@@ -275,7 +275,7 @@ async function leaderBoard(event) {
 downloadBtn.onclick = async () => {
     try {
         let token = localStorage.getItem("token");
-        let result = await axios.get("http://52.53.221.53:3000/downloadedExp", { headers: { "Authorization": token } });
+        let result = await axios.get("http://52.52.126.146:3000/downloadedExp", { headers: { "Authorization": token } });
         if (result.status === 200) {
             var a = document.createElement("a");
             a.href = result.data.fileUrl;
@@ -294,7 +294,7 @@ async function DownloadedFiles() {
 
     try {
         let token = localStorage.getItem("token");
-        let res = await axios.get("http://52.53.221.53:3000/downloadhistory", { headers: { "Authorization": token } });
+        let res = await axios.get("http://52.52.126.146:3000/downloadhistory", { headers: { "Authorization": token } });
         for (let i = 0; i < res.data.files.length; i++) {
             let li = document.createElement("li");
             li.textContent = `${res.data.files[i].date} : ${res.data.files[i].url}`;

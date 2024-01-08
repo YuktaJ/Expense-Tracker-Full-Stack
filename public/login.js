@@ -12,7 +12,7 @@ async function loginPage(event) {
         email, password
     }
     try {
-        let result = await axios.post("http://52.53.221.53:3000/login", obj);
+        let result = await axios.post("http://52.52.126.146:3000/login", obj);
         if (result.status === 201) {
             alert(result.data.message);
             localStorage.setItem("token", result.data.token);
