@@ -29,7 +29,7 @@ exports.resetPassword = async (req, res) => {
                 to: [{ "email": req.body.email }],
                 subject: "Reset Your Expense Tracker Password",
                 textContent: "Expense Tracker will help to cover your day-to-day expenses.",
-                htmlContent: `<a href="http://localhost:3000/resetpassword/${id}" type="button">Reset password</a>`,
+                htmlContent: `<a href="http://13.57.190.76:3000/resetpassword/${id}" type="button">Reset password</a>`,
             })
             console.log("Nitin working");
         }

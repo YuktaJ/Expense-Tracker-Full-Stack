@@ -1,9 +1,14 @@
 const env = require("dotenv");
 env.config();
+
 const express = require("express");
 const sequelize = require("./connections/database");
-const cors = require("cors");
-const morgan = require("morgan")
+
+const cors = require("cors"); 
+
+// to access the logs 
+const morgan = require("morgan");
+
 const userRoutes = require("./routes/User");
 const expenseRoutes = require("./routes/Expenses");
 const path = require("path");
@@ -17,7 +22,6 @@ const resetPasswordRoutes = require("./routes/ResetPassword");
 const ResetPassword = require("./models/ResetPassword");
 const Download = require("./models/Downloadfiles")
 
-
 const app = express();
 const accesslogstream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" });
 
@@ -26,6 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined", { stream: accesslogstream }))
 app.use(express.static("public"));
+
 app.use(userRoutes);
 app.use(expenseRoutes);
 app.use(purchaseRoutes);

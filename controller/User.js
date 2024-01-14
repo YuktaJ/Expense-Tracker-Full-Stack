@@ -3,19 +3,28 @@ const bcrypt = require("bcrypt"); // encrypting the password
 const jwt = require("jsonwebtoken");
 const sequelize = require("../connections/database");
 
-exports.generateAccessToken = (id, name, isPremium) => {
-    return jwt.sign({ id, name, isPremium }, process.env.SECRETKEY);
-};
 
 exports.postSingUp = async (req, res) => {
+
     const t = await sequelize.transaction();
+
     try {
         const username = req.body.username;
         const password = req.body.password;
         const email = req.body.email;
 
+        let user = await User.findOne({
+            where: {
+                email
+            }
+        })
 
-
+        if (user) {
+            await t.rollback();
+            return res.status(404).json({
+                message: "User Already Exist."
+            })
+        }
         const saltrounds = 10;
         const hash = await bcrypt.hash(password, saltrounds); // Hash the password synchronously
 
@@ -26,15 +35,21 @@ exports.postSingUp = async (req, res) => {
         }, { transaction: t });
 
         await t.commit();
+
         return res.status(201).json({
             message: "User created successfully."
         });
-    } catch (error) {
+    }
+    catch (error) {
         await t.rollback();
         res.status(500).json({
             message: "User creation failed."
         });
     }
+};
+
+exports.generateAccessToken = (id, name, isPremium) => {
+    return jwt.sign({ id, name, isPremium }, process.env.SECRETKEY);
 };
 
 exports.postLogin = async (req, res) => {

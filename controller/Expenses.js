@@ -1,6 +1,9 @@
 const sequelize = require("../connections/database");
+//aws cloud connection to fetch and upload data to s3 bucket
 const AWS = require("aws-sdk");
 const S3Services = require("../services/S3services");
+
+const userServices = require("../services/userservices");
 const Expense = require("../models/Expenses");
 const Download = require("../models/Downloadfiles");
 const User = require("../models/User");
@@ -27,14 +30,17 @@ exports.postAddExpenses = async (req, res) => {
         console.log(totalExpenses);
 
         let result = await Expense.create({
-            category, description, price, userId
+            category: category,
+            description: description,
+            price: price,
+            userId: userId
         }, { transaction: t })
+
         await User.update({
             totalExpenses
         }, {
             where: {
                 id: req.user.id
-
             }, transaction: t
         })
         await t.commit();
@@ -59,11 +65,9 @@ exports.getExpenses = async (req, res) => {
         let expenses = await Expense.findAll({
             where: {
                 userId: req.user.id,
-
             },
             offset: (page - 1) * itemPerPage,
             limit: itemPerPage
-
         });
         res.status(201).json({
             expenses,
@@ -123,7 +127,7 @@ exports.downloadExp = async (req, res) => {
         const userId = req.user.id;
         let currDate = new Date();
         currDate = currDate.toISOString().split('T')[0];
-        const expenses = await req.user.getExpenses();
+        const expenses = await userServices.getExpenses(req);
         const stringyfyExp = JSON.stringify(expenses);
         const fileName = `expense${userId}/${currDate}_${req.user.username}.txt`;
         console.log("Filename:", fileName)

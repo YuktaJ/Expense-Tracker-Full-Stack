@@ -9,11 +9,9 @@ exports.authenticate = async (req, res, next) => {
         const user = jwt.verify(token, process.env.SECRETKEY);
         console.log(user);
         if (!user) {
-
             throw new Error("Invalid user in token");
         }
-
-        let u = await User.findByPk(user.id);
+        let u = await User.findByPk(user.id); //takes entire row.
         req.user = u;
         next();
     } catch (error) {

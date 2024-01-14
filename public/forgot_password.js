@@ -9,7 +9,7 @@ async function forgetPassword(event) {
         let obj = {
             email
         }
-        let result = await axios.post("http://52.53.205.42:3000/resetPassword", obj);
+        let result = await axios.post("http://13.57.190.76:3000/resetPassword", obj);
     } catch (error) {
         console.log(error);
     }

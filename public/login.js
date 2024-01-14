@@ -12,11 +12,11 @@ async function loginPage(event) {
         email, password
     }
     try {
-        let result = await axios.post("http://52.53.205.42:3000/login", obj);
+        let result = await axios.post("http://13.57.190.76:3000/login", obj);
         if (result.status === 201) {
             alert(result.data.message);
             localStorage.setItem("token", result.data.token);
-            window.location.href = "./expense.html"
+            window.location.href = "./expense.html";
         }
     } catch (error) {
         document.body.innerHTML += `<div style="color:red;">${error.response.data.message}</div>`;

@@ -14,7 +14,7 @@ const uploadToS3 = async (data, file) => {
         Bucket: BUCKET_NAME,
         Key: file,
         Body: data,
-        ACL: "public-read"
+        ACL: "public-read"  
     }
     return new Promise((resolve, reject) => {
         s3bucket.upload(params, (error, result) => {
