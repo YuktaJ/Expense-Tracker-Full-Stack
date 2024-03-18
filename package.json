@@ -8,7 +8,7 @@
     "start": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Yukta Patil",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1528.0",
